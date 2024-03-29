@@ -8,33 +8,33 @@ exports.addProduct = async (req, res, next) => {
     try {
         const { price, discounted_price, name, sku, stoke, category } = req.body;
 
-        // if (!req.file) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Select Product Picture",
-        //     });
-        // } else
-        if (!name) {
+        if (!req.file) {
             return res.status(400).json({
-                message: "Please Enter Product Name",
+                success: false,
+                message: "Select Product Picture",
             });
-        } else if (!price) {
-            return res.status(400).json({
-                message: "Please Enter Product Price",
-            });
-        } else if (!sku) {
-            return res.status(400).json({
-                message: "Please Enter SKU",
-            });
-        } else if (!stoke) {
-            return res.status(400).json({
-                message: "Please Enter Product Stoke",
-            });
-        } else if (!category) {
-            return res.status(400).json({
-                message: "Please Select Category",
-            });
-        }
+        } else
+            if (!name) {
+                return res.status(400).json({
+                    message: "Please Enter Product Name",
+                });
+            } else if (!price) {
+                return res.status(400).json({
+                    message: "Please Enter Product Price",
+                });
+            } else if (!sku) {
+                return res.status(400).json({
+                    message: "Please Enter SKU",
+                });
+            } else if (!stoke) {
+                return res.status(400).json({
+                    message: "Please Enter Product Stoke",
+                });
+            } else if (!category) {
+                return res.status(400).json({
+                    message: "Please Select Category",
+                });
+            }
         const newProductData = {
             product_name: req.body.name,
             product_description: req.body.description,
@@ -45,7 +45,7 @@ exports.addProduct = async (req, res, next) => {
             product_color: req.body.color,
             product_stoke: req.body.stoke,
             product_sku: req.body.sku,
-            // product_image: req.file.path,
+            product_image: req.file.path,
         };
 
         const product = await Product.create(newProductData);

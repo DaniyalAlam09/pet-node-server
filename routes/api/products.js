@@ -24,8 +24,8 @@ let upload = multer({ storage });
 
 router.post(
     "/add-product",
-    isAuthenticated,
-    // upload.single("product"),
+    // isAuthenticated,
+    upload.single("product"),
     addProduct
 );
 router.get("/:id", getSigleProduct);
