@@ -206,17 +206,16 @@ exports.viewProducts = async (req, res) => {
             );
         }
         const products = await Product.find({
-            // product_name: { $regex: search, $options: "i" },
+            product_name: { $regex: search, $options: "i" },
             // product_brand: { $regex: brand, $options: "i" },
             product_price: priceRange,
         })
-        // .where("category")
-        // .in([...categories])
-        // .sort(sortBy);
+            // .where("category")
+            // .in([...categories])
+            .sort(sortBy);
         // .skip(page * limit)
         // .limit(limit);
         // .populate("owner");
-        console.log("products", products)
         const productCount = await Product.count();
         // console.log(productCount);
 
