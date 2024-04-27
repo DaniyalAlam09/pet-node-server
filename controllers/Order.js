@@ -5,7 +5,6 @@ const stripe = require("stripe")(
 );
 module.exports.createOrder = async (req, res) => {
     try {
-        console.log("req", req.body)
         const userId = req.body.user._id;
         const cart = req.body.products;
         let { fname, lname, email, phoneNo, address, bill } = req.body;
@@ -37,7 +36,9 @@ module.exports.createOrder = async (req, res) => {
 };
 
 module.exports.getOrderProducts = async (req, res) => {
-    const userId = req.user._id;
+    console.log("req.body", req.query)
+    console.log("req", req.params)
+    const userId = req.query.userid;
     try {
         let order = await Order.find({ userId: userId });
 
@@ -82,10 +83,11 @@ module.exports.createPayment = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
     try {
-        Order.find((err, doc) => {
-            if (err) return console.log(err);
-            res.json(doc);
-        });
+        const orders = await Order.find();
+        if (!orders) {
+            return res.send("No Order");
+        }
+        return res.status(200).json(orders.reverse());
     } catch (error) {
         res.status(500).json({
             success: false,

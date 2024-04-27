@@ -9,7 +9,7 @@ const { isAuthenticated } = require("../../middleware/isAuth");
 const router = express.Router();
 
 router.get("/allorders", getAllOrders);
-router.get("/order", isAuthenticated, getOrderProducts);
+router.get("/order", getOrderProducts);
 router.post("/", createOrder);
 
 router.post("/payment/create", createPayment);
