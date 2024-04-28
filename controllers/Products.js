@@ -104,7 +104,9 @@ exports.getSigleProduct = async (req, res, next) => {
 };
 
 exports.createReview = async (req, res, next) => {
-    const userId = req.user._id;
+    console.log("req.body", req.body)
+    const userId = req.body.userid;
+
     try {
         let order = await Order.find({ userId: userId });
 
@@ -124,16 +126,11 @@ exports.createReview = async (req, res, next) => {
                 .status(404)
                 .json({ success: false, message: "Product Not Found" });
         }
-        if (product.owner?.toString() === req.user._id.toString()) {
-            return res.json({
-                success: false,
-                message: "You Can't Review your Own Product",
-            });
-        }
+
 
         if (product) {
             alreadyReviewed = product.reviews.find(
-                (review) => review.user.toString() === req.user._id.toString()
+                (review) => review.user.toString() === userId
             );
         }
         if (alreadyReviewed) {
@@ -142,10 +139,10 @@ exports.createReview = async (req, res, next) => {
         for (let i = 0; i < order?.length; i++) {
             if (product._id.toString() === order[i].productId?.toString()) {
                 const review = {
-                    name: req.user.firstName + " " + req.user.lastName,
+                    name: req.body.name,
                     rating: Number(rating),
                     comment,
-                    user: req.user._id,
+                    user: userId,
                 };
 
                 product.reviews.push(review);
@@ -232,3 +229,36 @@ exports.viewProducts = async (req, res) => {
     }
 };
 
+exports.commentProduct = async (req, res, next) => {
+    console.log("called")
+    const newproduct = await Product.find();
+    console.log("newproduct", newproduct)
+    // try {
+    //     const pro = [];
+    //     const badReviewPro = [];
+    //     const reviews = newproduct?.map((p) => {
+    //         if (typeof p.reviews != "undefined") {
+    //             p.reviews?.map((c) => {
+    //                 const result = sentiment.analyze(c.comment);
+    //                 if (result.score > 2) {
+    //                     pro.push(p);
+    //                     pro.reverse();
+    //                 } else if (result.score < 0) {
+    //                     badReviewPro.push(p);
+    //                     badReviewPro.reverse();
+    //                 }
+    //             });
+    //         }
+    //     });
+    //     return res.status(200).json({
+    //         success: true,
+    //         badReviewPro,
+    //         pro,
+    //     });
+    // } catch (error) {
+    //     return res.status(500).json({
+    //         success: false,
+    //         message: error.message,
+    //     });
+    // }
+};

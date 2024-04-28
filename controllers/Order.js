@@ -53,16 +53,10 @@ module.exports.getOrderProducts = async (req, res) => {
 };
 
 module.exports.createPayment = async (req, res) => {
-    console.log("req", req.body)
-    // const userId = req.user._id;
     const bill = req.body.amount;
     try {
         if (bill && bill > 0) {
-            // res.send(cart);
             const total = bill;
-            var newPayment = {
-                amount: req.body.bill,
-            };
             console.log("Payment Request recieved for this ruppess", total);
             await Order.findByIdAndUpdate(req.body._id, { payment: true });
 
@@ -93,5 +87,19 @@ exports.getAllOrders = async (req, res) => {
             success: false,
             message: error.message,
         });
+    }
+};
+
+module.exports.updateOrder = async (req, res) => {
+    try {
+        console.log(req.body);
+        let order = await Order.findById(req.params.id);
+        order.status = req.body.status;
+        order.tracking = req.body.tracking;
+        await order.save();
+        res.status(200).send({ order, message: "Updated" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong");
     }
 };

@@ -8,6 +8,7 @@ const {
     updateProduct,
     viewProducts,
     deleteProduct,
+    commentProduct,
 } = require("../../controllers/Products");
 
 const multer = require("multer");
@@ -32,6 +33,8 @@ router.get("/:id", getSigleProduct);
 router.get("/", viewProducts);
 router.put("/updateProduct/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);
-router.post("/review/:id", isAuthenticated, createReview);
+router.post("/review/:id", createReview);
+// router.get("sentiment", commentProduct);
+
 
 module.exports = router;
