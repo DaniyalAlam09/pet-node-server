@@ -34,7 +34,7 @@ router.get("/", viewProducts);
 router.put("/updateProduct/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);
 router.post("/review/:id", createReview);
-// router.get("sentiment", commentProduct);
+router.post("/sentiment", commentProduct);
 
 
 module.exports = router;

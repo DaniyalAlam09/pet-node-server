@@ -104,7 +104,6 @@ exports.getSigleProduct = async (req, res, next) => {
 };
 
 exports.createReview = async (req, res, next) => {
-    console.log("req.body", req.body)
     const userId = req.body.userid;
 
     try {
@@ -171,7 +170,6 @@ exports.updateProduct = async (req, res, next) => {
 
 exports.viewProducts = async (req, res) => {
     try {
-        console.log("req", req.query)
         const page = Number(req.query.page) - 1 || 0;
         // const limit = Number(req.query.limit) || 10;
         const search = req.query.search || "";
@@ -182,12 +180,11 @@ exports.viewProducts = async (req, res) => {
         const categoriesObj = await Category.find({});
         let categories = [];
         categoriesObj.map((cat) => {
-            categories.push(cat.name);
+            categories.push(cat.slug);
         });
         category === "All"
             ? (category = [...categories])
             : (categories = req.query.category.split(","));
-
         req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
         let sortBy = {};
@@ -207,8 +204,8 @@ exports.viewProducts = async (req, res) => {
             // product_brand: { $regex: brand, $options: "i" },
             product_price: priceRange,
         })
-            // .where("category")
-            // .in([...categories])
+            .where("category")
+            .in([...categories])
             .sort(sortBy);
         // .skip(page * limit)
         // .limit(limit);
@@ -230,35 +227,33 @@ exports.viewProducts = async (req, res) => {
 };
 
 exports.commentProduct = async (req, res, next) => {
-    console.log("called")
     const newproduct = await Product.find();
-    console.log("newproduct", newproduct)
-    // try {
-    //     const pro = [];
-    //     const badReviewPro = [];
-    //     const reviews = newproduct?.map((p) => {
-    //         if (typeof p.reviews != "undefined") {
-    //             p.reviews?.map((c) => {
-    //                 const result = sentiment.analyze(c.comment);
-    //                 if (result.score > 2) {
-    //                     pro.push(p);
-    //                     pro.reverse();
-    //                 } else if (result.score < 0) {
-    //                     badReviewPro.push(p);
-    //                     badReviewPro.reverse();
-    //                 }
-    //             });
-    //         }
-    //     });
-    //     return res.status(200).json({
-    //         success: true,
-    //         badReviewPro,
-    //         pro,
-    //     });
-    // } catch (error) {
-    //     return res.status(500).json({
-    //         success: false,
-    //         message: error.message,
-    //     });
-    // }
+    try {
+        const pro = [];
+        const badReviewPro = [];
+        const reviews = newproduct?.map((p) => {
+            if (typeof p.reviews != "undefined") {
+                p.reviews?.map((c) => {
+                    const result = sentiment.analyze(c.comment);
+                    if (result.score > 2) {
+                        pro.push(p);
+                        pro.reverse();
+                    } else if (result.score < 0) {
+                        badReviewPro.push(p);
+                        badReviewPro.reverse();
+                    }
+                });
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            badReviewPro,
+            pro,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };

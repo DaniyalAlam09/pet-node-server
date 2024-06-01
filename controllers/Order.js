@@ -36,8 +36,6 @@ module.exports.createOrder = async (req, res) => {
 };
 
 module.exports.getOrderProducts = async (req, res) => {
-    console.log("req.body", req.query)
-    console.log("req", req.params)
     const userId = req.query.userid;
     try {
         let order = await Order.find({ userId: userId });
@@ -57,7 +55,6 @@ module.exports.createPayment = async (req, res) => {
     try {
         if (bill && bill > 0) {
             const total = bill;
-            console.log("Payment Request recieved for this ruppess", total);
             await Order.findByIdAndUpdate(req.body._id, { payment: true });
 
             const payment = await stripe.paymentIntents.create({
@@ -81,7 +78,7 @@ exports.getAllOrders = async (req, res) => {
         if (!orders) {
             return res.send("No Order");
         }
-        return res.status(200).json(orders.reverse());
+        return res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -92,7 +89,6 @@ exports.getAllOrders = async (req, res) => {
 
 module.exports.updateOrder = async (req, res) => {
     try {
-        console.log(req.body);
         let order = await Order.findById(req.params.id);
         order.status = req.body.status;
         order.tracking = req.body.tracking;

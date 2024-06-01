@@ -40,7 +40,6 @@ exports.getCategories = async (req, res, next) => {
 exports.getCategory = async (req, res, next) => {
     try {
         const category = await Category.findById(req.params.categoryId);
-        // console.log(categories[0].name);
         return res.status(200).json({
             success: true,
             category,
